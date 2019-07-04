@@ -26,6 +26,7 @@ namespace CreatNewDemo
         List<string> customerList = new List<string>();
         List<string> cmmList = new List<string>();
         List<string> sensorList = new List<string>();
+        List<Customer> customers = new List<Customer>();
         private async void Form1_Load(object sender, EventArgs e)
         {
             //读取配置
@@ -223,6 +224,12 @@ namespace CreatNewDemo
                         {
                             customerList.Add(mes.GetAttributeValue((ushort)1062));
                             comboBox4.Items.Add(mes.GetAttributeValue((ushort)1062));
+                            customers.Add(new Customer
+                            {
+                                name = mes.GetAttributeValue((ushort)1062),
+                                province = mes.GetAttributeValue((ushort)20001),
+                                city = mes.GetAttributeValue((ushort)20002)
+                            });
                         }
                     }
                     if (mes.GetAttributeValue((ushort)20051) != null)
@@ -253,6 +260,16 @@ namespace CreatNewDemo
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Customer selectCustomer= customers.Find(n => n.name == comboBox4.Text);
+            if (selectCustomer != null)
+            {
+                comboBox5.Text = selectCustomer.province;
+                comboBox6.Text = selectCustomer.city;
             }
         }
     }

@@ -239,6 +239,7 @@
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(396, 25);
             this.comboBox4.TabIndex = 4;
+            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
             this.comboBox4.TextUpdate += new System.EventHandler(this.comboBox4_TextUpdate);
             // 
             // label8
