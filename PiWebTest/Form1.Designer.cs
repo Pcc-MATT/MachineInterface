@@ -1,6 +1,6 @@
-﻿namespace PiWebInterface
+﻿namespace PiWebTest
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -35,46 +35,44 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(32, 57);
+            this.button1.Location = new System.Drawing.Point(109, 50);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(147, 30);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Monitor";
+            this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(219, 57);
+            this.button2.Location = new System.Drawing.Point(312, 50);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(147, 30);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "质量流";
+            this.button2.Size = new System.Drawing.Size(199, 52);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(435, 57);
+            this.button3.Location = new System.Drawing.Point(597, 42);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(147, 30);
-            this.button3.TabIndex = 0;
-            this.button3.Text = "测量员界面";
+            this.button3.Size = new System.Drawing.Size(171, 68);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "button3";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // Form1
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(601, 128);
+            this.ClientSize = new System.Drawing.Size(861, 297);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Name = "Form1";
-            this.Text = "Form1";
-            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Name = "FormMain";
+            this.Text = "FormMain";
             this.ResumeLayout(false);
 
         }

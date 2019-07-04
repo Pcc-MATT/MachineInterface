@@ -96,112 +96,137 @@ namespace PiWebCommandLineInterface
         }
         private bool excuteCommandLine()
         {
-            bool paraCorrect=true;
-            if (args.Count() == 6)//修改common part并修改jobnumber和tasknumber的筛选条件
+            bool paraCorrect = true;
+            if (args[0] == "SerialNumber")
             {
-                if (args[2] != null && args[2] != "None")//args[2]
-                {
-                    if (int.Parse(args[2]) >= 2)//jobStatus
-                    {
-                        if (args[3] != null && args[3] != "None" && args[0] != null && args[0] != "None" && args[1] != null && args[1] != "None"&&args[4]!=null&&args[4]!="None")//args[3]=commonPart
-                        {
-                            DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
-                            string currentpath = path_exe.FullName;
-                            String path = path_exe.Parent.Parent.FullName; //上两级的目录
-                            string ptxPath = args[4];
-                            if (File.Exists(ptxPath))
-                            {
-                                string openPtxStr = "";
-                                //改变搜索里的jobNumber和taskNumber
-                                if (args[3].Contains("Job_Management"))
-                                {
-                                    changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
-                                    openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                                } else if (args[3].Contains("Inspection_List"))
-                                {
-                                    changeMESLfile(currentpath + @"\ProductIdent&Software.msel", currentpath + @"\ProductIdent&SoftwareNew.msel");
-                                    openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\ProductIdent&SoftwareNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                                }else
-                                {
-                                    changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
-                                    openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                                }
-                               
-                                //string commandStr = " -open " + "\"" + ptxPath + "\"" + " -changeCommonParentPartPath " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
-                               
-                                //RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
-                                //this.BackgroundImage = Properties.Resources.qFlowConnecting;
-                                //Thread.Sleep(1500);
-                                RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
-                                //this.BackgroundImage = Properties.Resources.qFlowLoading;
-                                Thread.Sleep(int.Parse(args[5]));
-
-                                paraCorrect= true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        timer1.Enabled = false;
-                        MessageBox.Show("JobStatus状态不在应该的状态，请检查JobStatus！");
-
-                    }
-                }
-            }else if (args.Count() == 4)//修改jobnumber 和tasknumber的筛选条件
-            {
-                string ptxPath = args[2];
-                if (File.Exists(ptxPath))
-                {
-                    DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
-                    string currentpath = path_exe.FullName;
-                    //改变搜索里的jobNumber和taskNumber
-                    changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
-                    string commandStr = " -open " + "\"" + ptxPath + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
-                    string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                    RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
-                    Thread.Sleep(1500);
-                    RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
-            
-                    Thread.Sleep(int.Parse(args[3]));
-                    paraCorrect= true;
-                }
-            }
-            else if (args.Count() == 2)//打开report
-            {
-                string ptxPath = args[0];
-                if (File.Exists(ptxPath))
-                {
-                    //改变搜索里的jobNumber和taskNumber
-                    string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                    RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
-                    Thread.Sleep(int.Parse(args[1]));
-                    paraCorrect= true;
-                }
-            }
-            else if (args.Count() == 3)//修改part ident
-            {
+                DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                string currentpath = path_exe.FullName;
+                String path = path_exe.Parent.FullName; //上一级的目录
                 string ptxPath = args[1];
                 if (File.Exists(ptxPath))
                 {
-                    DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
-                    string currentpath = path_exe.FullName;
-                    //改变搜索里的jobNumber和taskNumber
-                    changeMESLfile(currentpath + @"\Product_ident.msel", currentpath + @"\Product_identNew.msel");
-                    string commandStr = " -open " + "\"" + ptxPath + "\"" + " -searchCriteria " + "\"" + currentpath + "\\Product_identNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
-                    string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
-                    RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
-                    //this.BackgroundImage = Properties.Resources.qFlowConnecting;
-                    Thread.Sleep(1500);
+                    string openPtxStr = "";
+                    changeMESLfile(currentpath + @"\SerialNumber.msel", currentpath + @"\SerialNumberNew.msel");
+                    openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -searchCriteria " + "\"" + currentpath + "\\SerialNumberNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
                     RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
                     //this.BackgroundImage = Properties.Resources.qFlowLoading;
-                    Thread.Sleep(int.Parse(args[2]));
-                    paraCorrect= true;
+                    Thread.Sleep(int.Parse(args[3]));
+
+                    paraCorrect = true;
                 }
             }
             else
             {
-                paraCorrect= false;
+                if (args.Count() == 6)//修改common part并修改jobnumber和tasknumber的筛选条件
+                {
+                    if (args[2] != null && args[2] != "None")//args[2]
+                    {
+                        if (int.Parse(args[2]) >= 2)//jobStatus
+                        {
+                            if (args[3] != null && args[3] != "None" && args[0] != null && args[0] != "None" && args[1] != null && args[1] != "None" && args[4] != null && args[4] != "None")//args[3]=commonPart
+                            {
+                                DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                                string currentpath = path_exe.FullName;
+                                String path = path_exe.Parent.Parent.FullName; //上两级的目录
+                                string ptxPath = args[4];
+                                if (File.Exists(ptxPath))
+                                {
+                                    string openPtxStr = "";
+                                    //改变搜索里的jobNumber和taskNumber
+                                    if (args[3].Contains("Job_Management"))
+                                    {
+                                        changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
+                                        openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                                    }
+                                    else if (args[3].Contains("Inspection_List"))
+                                    {
+                                        changeMESLfile(currentpath + @"\ProductIdent&Software.msel", currentpath + @"\ProductIdent&SoftwareNew.msel");
+                                        openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\ProductIdent&SoftwareNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                                    }
+                                    else
+                                    {
+                                        changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
+                                        openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -initiallyCheckedGenericDataBindingPart " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                                    }
+
+                                    //string commandStr = " -open " + "\"" + ptxPath + "\"" + " -changeCommonParentPartPath " + "\"" + args[3] + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
+
+                                    //RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
+                                    //this.BackgroundImage = Properties.Resources.qFlowConnecting;
+                                    //Thread.Sleep(1500);
+                                    RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
+                                    //this.BackgroundImage = Properties.Resources.qFlowLoading;
+                                    Thread.Sleep(int.Parse(args[5]));
+
+                                    paraCorrect = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            timer1.Enabled = false;
+                            MessageBox.Show("JobStatus状态不在应该的状态，请检查JobStatus！");
+
+                        }
+                    }
+                }
+                else if (args.Count() == 4)//修改jobnumber 和tasknumber的筛选条件
+                {
+                    string ptxPath = args[2];
+                    if (File.Exists(ptxPath))
+                    {
+                        DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                        string currentpath = path_exe.FullName;
+                        //改变搜索里的jobNumber和taskNumber
+                        changeMESLfile(currentpath + @"\JobNum&TaskNum.msel", currentpath + @"\JobNum&TaskNumNew.msel");
+                        string commandStr = " -open " + "\"" + ptxPath + "\"" + " -searchCriteria " + "\"" + currentpath + "\\JobNum&TaskNumNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
+                        string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                        RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
+                        Thread.Sleep(1500);
+                        RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
+
+                        Thread.Sleep(int.Parse(args[3]));
+                        paraCorrect = true;
+                    }
+                }
+                else if (args.Count() == 2)//打开report
+                {
+                    string ptxPath = args[0];
+                    if (File.Exists(ptxPath))
+                    {
+                        //改变搜索里的jobNumber和taskNumber
+                        string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                        RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
+                        Thread.Sleep(int.Parse(args[1]));
+                        paraCorrect = true;
+                    }
+                }
+                else if (args.Count() == 3)//修改part ident
+                {
+                    string ptxPath = args[1];
+                    if (File.Exists(ptxPath))
+                    {
+                        DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                        string currentpath = path_exe.FullName;
+                        //改变搜索里的jobNumber和taskNumber
+                        changeMESLfile(currentpath + @"\Product_ident.msel", currentpath + @"\Product_identNew.msel");
+                        string commandStr = " -open " + "\"" + ptxPath + "\"" + " -searchCriteria " + "\"" + currentpath + "\\Product_identNew.msel" + "\"" + " -Save " + "\"" + ptxPath + "\"";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe\"" + 
+                        string openPtxStr = " -open " + "\"" + ptxPath + "\"" + " -nosplash -maximize";//"\"C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe\"" + 
+                        RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Cmdmon.exe", commandStr);
+                        //this.BackgroundImage = Properties.Resources.qFlowConnecting;
+                        Thread.Sleep(1500);
+                        RealAction("C:\\Program Files\\Zeiss\\PiWeb\\Monitor.exe", openPtxStr);
+                        //this.BackgroundImage = Properties.Resources.qFlowLoading;
+                        Thread.Sleep(int.Parse(args[2]));
+                        paraCorrect = true;
+                    }
+                }
+                else
+                {
+                    paraCorrect = false;
+                }
             }
+
             return paraCorrect;
         }
         /// <summary>
@@ -241,8 +266,8 @@ namespace PiWebCommandLineInterface
                 pro.WaitForExit();//等待程序执行完退出进程
                 pro.Close();
                 return str;
-               // return pro.HasExited;
-                
+                // return pro.HasExited;
+
             }
             finally
             {
@@ -258,7 +283,7 @@ namespace PiWebCommandLineInterface
             }
         }
 
-        private void changeMESLfile(string filePath,string newFilePath)
+        private void changeMESLfile(string filePath, string newFilePath)
         {
             List<string> lines = new List<string>();
             StreamReader sr = new StreamReader(filePath);
@@ -269,7 +294,7 @@ namespace PiWebCommandLineInterface
             }
             sr.Close();
             List<string> newLines = new List<string>();
-            foreach(var str in lines)
+            foreach (var str in lines)
             {
                 string temp = str;
                 if (str.Contains("TaskNumberValue"))
@@ -292,10 +317,14 @@ namespace PiWebCommandLineInterface
                 {
                     temp = str.Replace("SoftwareValue", args[1]);
                 }
+                if (str.Contains("serial_Number"))
+                {
+                    temp = str.Replace("serial_Number", args[2]);
+                }
                 newLines.Add(temp);
             }
             StreamWriter sw = new StreamWriter(newFilePath);
-            foreach(var tmp in newLines)
+            foreach (var tmp in newLines)
             {
                 sw.WriteLine(tmp);
             }
@@ -362,7 +391,7 @@ namespace PiWebCommandLineInterface
             }
 
         }
-     
+
         private void timer2_Tick(object sender, EventArgs e)
         {
             //count++;

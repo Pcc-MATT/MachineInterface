@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
 using System.Threading;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace PiWebInterface
 {
@@ -130,27 +132,58 @@ namespace PiWebInterface
                     .KeyPress(VirtualKeyCode.F5);
             }
         }
-
+        public string pageNameContain;
+        public int delayTime;
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (args.Count() == 2)
+            if (readJsonPara())
             {
-                Thread.Sleep(int.Parse(args[1]));
-            }
-            //模拟鼠标
-            List<WindowInfo> wndListT = new List<WindowInfo>();
-            wndListT = GetAllDesktopWindows();
-            WindowInfo wiT = wndListT.Find(n => n.szWindowName.Contains(args[0]));
-            IntPtr hwndPhotoT = wiT.hWnd; //查找拍照程序的句柄【任务管理器中的应用程序名称】"OWST2"
-            if (hwndPhotoT != IntPtr.Zero)
+                if (PiWebInterfaceValuePairs.Keys.Contains(args[0]))
+                {
+                    delayTime = int.Parse(PiWebInterfaceValuePairs[args[0]].ToString());
+                    Thread.Sleep(delayTime);
+                    //模拟鼠标
+                    List<WindowInfo> wndListT = new List<WindowInfo>();
+                    wndListT = GetAllDesktopWindows();
+                    WindowInfo wiT = wndListT.Find(n => n.szWindowName.Contains(args[0]));
+                    IntPtr hwndPhotoT = wiT.hWnd; //查找拍照程序的句柄【任务管理器中的应用程序名称】"OWST2"
+                    if (hwndPhotoT != IntPtr.Zero)
+                    {
+                        SetForegroundWindow(hwndPhotoT);//窗体置顶
+                        ShowWindow(hwndPhotoT, 3);//最大化窗体
+                        var sim2 = new InputSimulator();
+                        sim2.Keyboard
+                            .KeyPress(VirtualKeyCode.F5);
+                    }
+                }
+                else
+                {
+                   
+                }
+                Application.Exit();
+            }   
+        }
+        Dictionary<string, object> PiWebInterfaceValuePairs;
+        private bool readJsonPara()
+        {
+            try
             {
-                SetForegroundWindow(hwndPhotoT);//窗体置顶
-                ShowWindow(hwndPhotoT, 3);//最大化窗体
-                var sim2 = new InputSimulator();
-                sim2.Keyboard
-                    .KeyPress(VirtualKeyCode.F5);
+                DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                String path = path_exe.Parent.FullName; //上级的目录
+                StreamReader sr = new StreamReader(path + @"\relative_files\config.json",Encoding.GetEncoding("GB2312"));
+                Dictionary<string, object> valuePairs = new Dictionary<string, object>();
+                valuePairs = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
+                sr.Close();
+                PiWebInterfaceValuePairs = new Dictionary<string, object>();
+                var ss1 = JsonConvert.SerializeObject(valuePairs["PiWebInterfaceValuePairs"], Formatting.Indented);
+                PiWebInterfaceValuePairs = JsonConvert.DeserializeObject<Dictionary<string, object>>(ss1);
+                return true;
             }
-            Application.Exit();
+            catch (Exception ex)
+            {
+                MessageBox.Show("读取config.json出错" + ex);
+                return false;
+            }
         }
     }
 }
