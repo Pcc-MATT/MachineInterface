@@ -170,7 +170,7 @@ namespace PiWebInterface
             {
                 DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
                 String path = path_exe.Parent.FullName; //上级的目录
-                StreamReader sr = new StreamReader(path + @"\relative_files\config.json",Encoding.GetEncoding("GB2312"));
+                StreamReader sr = new StreamReader(path + @"\Relative_Files\config.json", new UTF8Encoding(false));
                 Dictionary<string, object> valuePairs = new Dictionary<string, object>();
                 valuePairs = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
                 sr.Close();

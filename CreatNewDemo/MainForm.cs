@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,11 +15,20 @@ using Zeiss.IMT.PiWeb.Api.DataService.Rest;
 
 namespace CreatNewDemo
 {
+    // 1.定义委托
+    public delegate void DelReadStdOutput(string result);
+    public delegate void DelReadErrOutput(string result);
     public partial class MainForm : Form
     {
+        // 2.定义委托事件
+        public event DelReadStdOutput ReadStdOutput;
+        public event DelReadErrOutput ReadErrOutput;
         public MainForm()
         {
             InitializeComponent();
+            //3.将相应函数注册到委托事件中
+            ReadStdOutput += new DelReadStdOutput(ReadStdOutputAction);
+            ReadErrOutput += new DelReadErrOutput(ReadErrOutputAction);
         }
         List<string> ownerList = new List<string>();
         List<string> salesList = new List<string>();
@@ -33,7 +43,7 @@ namespace CreatNewDemo
             //读取配置
             DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
             String path = path_exe.Parent.FullName; //上级的目录
-            string filepath = path + @"\Relative_files\config.json";
+            string filepath = path + @"\Relative_Files\config.json";
             readJsonPara(filepath);
             //连接piweb server
             checkConnect2PiWebServer();
@@ -45,41 +55,58 @@ namespace CreatNewDemo
         //得到Combobox的数据，返回一个List
         public List<string> getComboboxItems(ComboBox cb)
         {
-            //初始化绑定默认关键词
-            List<string> listOnit = new List<string>();
-            //将数据项添加到listOnit中
-            for (int i = 0; i < cb.Items.Count; i++)
+            try
             {
-                listOnit.Add(cb.Items[i].ToString());
+                //初始化绑定默认关键词
+                List<string> listOnit = new List<string>();
+                //将数据项添加到listOnit中
+                for (int i = 0; i < cb.Items.Count; i++)
+                {
+                    listOnit.Add(cb.Items[i].ToString());
+                }
+                return listOnit;
             }
-            return listOnit;
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return null;
+            }
+           
+           
         }
         //模糊查询Combobox
         public void selectCombobox(ComboBox cb, List<string> listOnit)
         {
-            //输入key之后返回的关键词
-            List<string> listNew = new List<string>();
-            //清空combobox
-            cb.Items.Clear();
-            //清空listNew
-            listNew.Clear();
-            //遍历全部备查数据
-            foreach (var item in listOnit)
+            try
             {
-                if (item.Contains(cb.Text))
+                //输入key之后返回的关键词
+                List<string> listNew = new List<string>();
+                //清空combobox
+                cb.Items.Clear();
+                //清空listNew
+                listNew.Clear();
+                //遍历全部备查数据
+                foreach (var item in listOnit)
                 {
-                    //符合，插入ListNew
-                    listNew.Add(item);
+                    if (item.Contains(cb.Text))
+                    {
+                        //符合，插入ListNew
+                        listNew.Add(item);
+                    }
                 }
+                //combobox添加已经查询到的关键字
+                cb.Items.AddRange(listNew.ToArray());
+                //设置光标位置，否则光标位置始终保持在第一列，造成输入关键词的倒序排列
+                cb.SelectionStart = cb.Text.Length;
+                //保持鼠标指针原来状态，有时鼠标指针会被下拉框覆盖，所以要进行一次设置
+                Cursor = Cursors.Default;
+                //自动弹出下拉框
+                cb.DroppedDown = true;
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
-            //combobox添加已经查询到的关键字
-            cb.Items.AddRange(listNew.ToArray());
-            //设置光标位置，否则光标位置始终保持在第一列，造成输入关键词的倒序排列
-            cb.SelectionStart = cb.Text.Length;
-            //保持鼠标指针原来状态，有时鼠标指针会被下拉框覆盖，所以要进行一次设置
-            Cursor = Cursors.Default;
-            //自动弹出下拉框
-            cb.DroppedDown = true;
+            
         }
         private List<string> listCombobox1;//Combobox的最初Item项
         private List<string> listCombobox2;//Combobox的最初Item项
@@ -125,7 +152,7 @@ namespace CreatNewDemo
             try
             {
                 FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamReader sr = new StreamReader(fs, Encoding.GetEncoding("GB2312"));
+                StreamReader sr = new StreamReader(fs, new UTF8Encoding(false));
                 Dictionary<string, object> valuePairs = new Dictionary<string, object>();
                 valuePairs = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
                 sr.Close();
@@ -308,11 +335,10 @@ namespace CreatNewDemo
                 DialogResult dialogResult = MessageBox.Show("是否需要创建Demo？", "创建Demo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
                 {
-                   
                    creatNewDemo(demoType);
-                }
-                
+                } 
             }
+
         }
         bool creatSuccessed;
         private async void creatNewDemo(string demoType)
@@ -327,7 +353,7 @@ namespace CreatNewDemo
                     var Part = (InspectionPlanPart)parts.ToList()[0];
                     var attributes = new List<Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute>();
                     //demo type
-                    attributes.Add(new Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute((ushort)20043, demoType + "_DEMO"));
+                    attributes.Add(new Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute((ushort)20043, demoType + "_Demo"));
                     //serial number
                     string date = DateTime.Now.ToString("yyyyMMddHHmmss");
                     attributes.Add(new Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute((ushort)14, CC_Data["CC"] + date));
@@ -473,6 +499,8 @@ namespace CreatNewDemo
             {
                 if (creatSuccessed)
                 {
+                    DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
+                    RealAction(path_exe+ @"\PiWebInterface.exe", " 主界面");
                     //写入完成
                     DialogResult dr = MessageBox.Show("创建Demo完成,是否继续创建Demo?", "创建Demo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dr == DialogResult.Yes)
@@ -493,8 +521,11 @@ namespace CreatNewDemo
         {
             if (checkBox2.Checked)
             {
-                textBox5.Text = "已完成";
-                textBox5.Enabled = false;
+                if (textBox5.Text == "")
+                {
+                    textBox5.Text = "已完成";
+                }
+                //textBox5.Enabled = false;
             }
             else
             {
@@ -507,6 +538,74 @@ namespace CreatNewDemo
             if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
             {
                 e.Handled = true;
+            }
+        }
+
+        #region run exe
+        private void RealAction(string StartFileName, string StartFileArg)
+        {
+            Process CmdProcess = new Process();
+            CmdProcess.StartInfo.FileName = StartFileName;      // 命令
+            CmdProcess.StartInfo.Arguments = StartFileArg;      // 参数
+
+            CmdProcess.StartInfo.CreateNoWindow = true;         // 不创建新窗口
+            CmdProcess.StartInfo.UseShellExecute = false;
+            CmdProcess.StartInfo.RedirectStandardInput = true;  // 重定向输入
+            CmdProcess.StartInfo.RedirectStandardOutput = true; // 重定向标准输出
+            CmdProcess.StartInfo.RedirectStandardError = true;  // 重定向错误输出
+                                                                //CmdProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            CmdProcess.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);
+            CmdProcess.ErrorDataReceived += new DataReceivedEventHandler(p_ErrorDataReceived);
+
+            CmdProcess.EnableRaisingEvents = true;                      // 启用Exited事件
+            CmdProcess.Exited += new EventHandler(CmdProcess_Exited);   // 注册进程结束事件
+
+            CmdProcess.Start();
+            CmdProcess.BeginOutputReadLine();
+            CmdProcess.BeginErrorReadLine();
+
+            // 如果打开注释，则以同步方式执行命令，此例子中用Exited事件异步执行。
+            // CmdProcess.WaitForExit();     
+        }
+        private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+            {
+                // 4. 异步调用，需要invoke
+                this.Invoke(ReadStdOutput, new object[] { e.Data });
+            }
+        }
+
+        private void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+            {
+                this.Invoke(ReadErrOutput, new object[] { e.Data });
+            }
+        }
+
+        private void ReadStdOutputAction(string result)
+        {
+            //this.label2.Text+=(result + "\r\n");
+        }
+
+        private void ReadErrOutputAction(string result)
+        {
+            //this.label2.Text+=(result + "\r\n");
+        }
+
+        private void CmdProcess_Exited(object sender, EventArgs e)
+        {
+            // 执行结束后触发
+        }
+        #endregion
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox5.Text != "")
+            {
+                checkBox2.CheckState = CheckState.Checked;
             }
         }
     }

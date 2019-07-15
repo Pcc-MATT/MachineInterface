@@ -124,7 +124,7 @@ namespace CreatNewDemo
             try
             {
                 FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamReader sr = new StreamReader(fs, Encoding.GetEncoding("GB2312"));
+                StreamReader sr = new StreamReader(fs, new UTF8Encoding(false));
                 Dictionary<string, object> valuePairs = new Dictionary<string, object>();
                 valuePairs = JsonConvert.DeserializeObject<Dictionary<string, object>>(sr.ReadToEnd());
                 sr.Close();

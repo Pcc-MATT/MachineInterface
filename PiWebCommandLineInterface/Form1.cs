@@ -36,6 +36,11 @@ namespace PiWebCommandLineInterface
             ReadStdOutput += new DelReadStdOutput(ReadStdOutputAction);
             ReadErrOutput += new DelReadErrOutput(ReadErrOutputAction);
         }
+        /// <summary>
+        /// 调取外部程序运行
+        /// </summary>
+        /// <param name="StartFileName"></param>
+        /// <param name="StartFileArg"></param>
         private void RealAction(string StartFileName, string StartFileArg)
         {
             Process CmdProcess = new Process();

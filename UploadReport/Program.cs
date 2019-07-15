@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CreatNewDemo
+namespace UploadReport
 {
     static class Program
     {
@@ -12,16 +12,11 @@ namespace CreatNewDemo
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            try
-            {
-                Application.Run(new MainForm());//Form1()
-            }
-            catch { }
-          
+            Application.Run(new Form1(args));
         }
     }
 }
