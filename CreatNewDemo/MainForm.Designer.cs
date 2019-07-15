@@ -166,7 +166,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(1393, 60);
             this.label1.TabIndex = 2;
-            this.label1.Text = "  qFlowDemo - STEP1 Demo创建&交接";
+            this.label1.Text = "  qFlowDemo - Demo创建&交接";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label2

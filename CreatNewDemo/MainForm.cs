@@ -66,13 +66,13 @@ namespace CreatNewDemo
                 }
                 return listOnit;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
                 return null;
             }
-           
-           
+
+
         }
         //模糊查询Combobox
         public void selectCombobox(ComboBox cb, List<string> listOnit)
@@ -94,6 +94,7 @@ namespace CreatNewDemo
                         listNew.Add(item);
                     }
                 }
+
                 //combobox添加已经查询到的关键字
                 cb.Items.AddRange(listNew.ToArray());
                 //设置光标位置，否则光标位置始终保持在第一列，造成输入关键词的倒序排列
@@ -102,11 +103,14 @@ namespace CreatNewDemo
                 Cursor = Cursors.Default;
                 //自动弹出下拉框
                 cb.DroppedDown = true;
-            }catch(Exception ex)
+
+
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-            
+
         }
         private List<string> listCombobox1;//Combobox的最初Item项
         private List<string> listCombobox2;//Combobox的最初Item项
@@ -116,32 +120,56 @@ namespace CreatNewDemo
         private List<string> listCombobox8;//Combobox的最初Item项
         private void comboBox2_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox2, listCombobox2);
+            if (listCombobox2.Count() > 0)
+            {
+                selectCombobox(comboBox2, listCombobox2);
+            }
+            
         }
 
         private void comboBox1_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox1, listCombobox1);
+            if (listCombobox1.Count() > 0)
+            {
+                selectCombobox(comboBox1, listCombobox1);
+            }
+               
         }
 
         private void comboBox3_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox3, listCombobox3);
+            if (listCombobox3.Count > 0)
+            {
+                selectCombobox(comboBox3, listCombobox3);
+            }
+           
         }
 
         private void comboBox4_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox4, listCombobox4);
+            if (listCombobox4.Count > 0)
+            {
+                selectCombobox(comboBox4, listCombobox4);
+            }
+           
         }
 
         private void comboBox7_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox7, listCombobox7);
+            if (listCombobox7.Count > 0)
+            {
+                selectCombobox(comboBox7, listCombobox7);
+            }
+         
         }
 
         private void comboBox8_TextUpdate(object sender, EventArgs e)
         {
-            selectCombobox(comboBox8, listCombobox8);
+            if (listCombobox8.Count > 0)
+            {
+                selectCombobox(comboBox8, listCombobox8);
+            }
+            
         }
         #endregion
 
@@ -295,12 +323,16 @@ namespace CreatNewDemo
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Customer selectCustomer = customers.Find(n => n.name == comboBox4.Text);
-            if (selectCustomer != null)
+            if (this.comboBox4.Text != "" && this.comboBox4.Text != null)
             {
-                comboBox5.Text = selectCustomer.province;
-                comboBox6.Text = selectCustomer.city;
+                Customer selectCustomer = customers.Find(n => n.name == comboBox4.Text);
+                if (selectCustomer != null)
+                {
+                    comboBox5.Text = selectCustomer.province;
+                    comboBox6.Text = selectCustomer.city;
+                }
             }
+
         }
 
         private async void button2_Click(object sender, EventArgs e)
@@ -335,8 +367,8 @@ namespace CreatNewDemo
                 DialogResult dialogResult = MessageBox.Show("是否需要创建Demo？", "创建Demo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
                 {
-                   creatNewDemo(demoType);
-                } 
+                    creatNewDemo(demoType);
+                }
             }
 
         }
@@ -367,7 +399,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("专案负责人未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //sales
                     if (comboBox2.Text != "")
@@ -377,7 +409,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("销售联系人未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //application engineer
                     if (comboBox3.Text != "")
@@ -387,7 +419,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("Demo工程师未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //customer
                     if (comboBox4.Text != "")
@@ -397,7 +429,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("客户名称未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //province
                     if (comboBox5.Text != "")
@@ -407,7 +439,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("客户所在省份未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //city
                     if (comboBox6.Text != "")
@@ -417,7 +449,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("客户所在城市未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //customer Contact person
                     attributes.Add(new Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute((ushort)20053, textBox1.Text.Trim()));
@@ -435,7 +467,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("三坐标信息未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //sensor info
                     if (comboBox8.Text != "")
@@ -445,7 +477,7 @@ namespace CreatNewDemo
                     else
                     {
                         MessageBox.Show("传感器信息未填写！");
-                        creatSuccessed= false;
+                        creatSuccessed = false;
                     }
                     //time K4
                     attributes.Add(new Zeiss.IMT.PiWeb.Api.DataService.Rest.Attribute((ushort)4, DateTime.Now));
@@ -486,27 +518,40 @@ namespace CreatNewDemo
                 }
                 else
                 {
-                    creatSuccessed= false;
+                    creatSuccessed = false;
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-                creatSuccessed= false;
+                creatSuccessed = false;
             }
             finally
             {
                 if (creatSuccessed)
                 {
                     DirectoryInfo path_exe = new DirectoryInfo(Application.StartupPath); //exe目录
-                    RealAction(path_exe+ @"\PiWebInterface.exe", " 主界面");
+                    RealAction(path_exe + @"\PiWebInterface.exe", " 主界面");
                     //写入完成
                     DialogResult dr = MessageBox.Show("创建Demo完成,是否继续创建Demo?", "创建Demo", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (dr == DialogResult.Yes)
                     {
                         //询问是否清空界面内容
-
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
+                        comboBox4.Text = "";
+                        comboBox5.Text = "";
+                        comboBox6.Text = "";
+                        comboBox7.Text = "";
+                        comboBox8.Text = "";
+                        textBox1.Text = "";
+                        textBox2.Text = "";
+                        textBox3.Text = "";
+                        textBox4.Text = "";
+                        checkBox1.Checked = false;
+                        checkBox2.Checked = false;
+                        textBox5.Text = "";
                     }
                     else
                     {
@@ -514,7 +559,7 @@ namespace CreatNewDemo
                     }
                 }
             }
-            
+
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
@@ -529,7 +574,7 @@ namespace CreatNewDemo
             }
             else
             {
-                textBox5.Enabled = true ;
+                textBox5.Enabled = true;
             }
         }
 
